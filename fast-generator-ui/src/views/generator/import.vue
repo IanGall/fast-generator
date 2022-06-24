@@ -11,6 +11,7 @@
 				<el-select
 					v-model="dataForm.tableInfo"
 					value-key="tableName"
+					filterable
 					:disabled="!dataForm.showTableSelect"
 					style="width: 100%"
 					placeholder="请选择表名"
