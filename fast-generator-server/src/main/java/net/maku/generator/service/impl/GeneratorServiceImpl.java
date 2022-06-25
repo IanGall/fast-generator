@@ -162,8 +162,8 @@ public class GeneratorServiceImpl implements GeneratorService {
         //数据模型
         Map<String, Object> dataModel = new HashMap<>();
         //项目信息
-        dataModel.put("package", tableInfo.getPackageName());
-        dataModel.put("packagePath", tableInfo.getPackageName().replace(".", File.separator));
+        // dataModel.put("package", tableInfo.getPackageName());
+        // dataModel.put("packagePath", tableInfo.getPackageName().replace(".", File.separator));
         dataModel.put("version", tableInfo.getVersion());
 
         String moduleName = tableInfo.getModuleName();
@@ -220,6 +220,9 @@ public class GeneratorServiceImpl implements GeneratorService {
         //渲染模板并输出
         for(TemplateInfo template : generator.getTemplates()){
             dataModel.put("templateName", template.getTemplateName());
+            dataModel.put("package", template.getPackageName());
+            dataModel.put("module", template.getModule());
+            dataModel.put("packagePath", template.getPackageName().replace(".", File.separator));
             String content = GenUtils.getTemplateContent(template.getTemplateContent(), dataModel);
             String path = GenUtils.getTemplateContent(template.getGeneratorPath(), dataModel);
             //FileUtil.writeUtf8String(content, path);

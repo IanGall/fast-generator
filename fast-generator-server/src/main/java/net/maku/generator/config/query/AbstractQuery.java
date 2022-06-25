@@ -56,4 +56,20 @@ public interface AbstractQuery {
      * 主键字段
      */
     String fieldKey();
+
+    default String characterMaximumLength() {
+        return "character_maximum_length";
+    }
+
+    default String numericPrecision() {
+        return "numeric_precision";
+    }
+
+    default String numericScale() {
+        return "numeric_scale";
+    }
+
+    default String isNullAble() {
+        return "is_null_able";
+    }
 }

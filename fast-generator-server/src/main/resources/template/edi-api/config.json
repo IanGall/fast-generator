@@ -1,0 +1,21 @@
+{
+  "project": {
+    "packageName": "com.dcjet",
+    "version": "1.0.0",
+    "backendPath": "C:\\generator\\fast-boot\\fast-server",
+    "frontendPath": "C:\\generator\\fast-admin"
+  },
+  "developer": {
+    "author": "阿沐",
+    "email": "babamu@126.com"
+  },
+  "templates": [
+
+    {
+      "templateName": "ediEntityHead.ftl",
+      "packageName": "com.dcjet.edi.biz",
+      "module": "ics-edi-core",
+      "generatorPath": "${backendPath}/${module}/src/main/java/${packagePath}/${moduleName!}/entity/${subModuleName!}/${ClassName}.java"
+    }
+  ]
+}

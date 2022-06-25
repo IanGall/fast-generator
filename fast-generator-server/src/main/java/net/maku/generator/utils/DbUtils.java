@@ -10,6 +10,7 @@ import oracle.jdbc.OracleConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,6 +21,8 @@ import java.util.List;
 @Slf4j
 public class DbUtils {
     private static final int CONNECTION_TIMEOUTS_SECONDS = 6;
+
+    private static List<String> precisionTypes = Arrays.asList("String", "BigDecimal");
 
     /**
      * 获得数据库连接
@@ -35,8 +38,8 @@ public class DbUtils {
         Class.forName(info.getDbType().getDriverClass());
 
         Connection connection = DriverManager.getConnection(info.getConnUrl(), info.getUsername(), info.getPassword());
-        if(info.getDbType() == DbType.Oracle){
-            ((OracleConnection)connection).setRemarksReporting(true);
+        if (info.getDbType() == DbType.Oracle) {
+            ((OracleConnection) connection).setRemarksReporting(true);
         }
 
         return connection;
@@ -61,7 +64,7 @@ public class DbUtils {
                 tableInfo.setDatasourceId(info.getId());
                 return tableInfo;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
 
@@ -89,7 +92,7 @@ public class DbUtils {
             }
 
             info.getConnection().close();
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
 
@@ -100,8 +103,8 @@ public class DbUtils {
     /**
      * 获取表的列属性
      *
-     * @param info  数据库配置文件
-     * @param tableName  表名
+     * @param info      数据库配置文件
+     * @param tableName 表名
      */
     public static List<TableFieldEntity> getTableColumns(DataSourceInfo info, Long tableId, String tableName) {
         List<TableFieldEntity> tableFieldList = new ArrayList<>();
@@ -123,17 +126,25 @@ public class DbUtils {
                 field.setTableName(tableName);
                 field.setColumnName(rs.getString(dbQuery.fieldName()));
                 String columnType = rs.getString(dbQuery.fieldType());
-                if(columnType.contains(" ")){
+                if (columnType.contains(" ")) {
                     columnType = columnType.substring(0, columnType.indexOf(" "));
                 }
                 field.setColumnType(columnType);
                 field.setColumnComment(rs.getString(dbQuery.fieldComment()));
+                field.setRequired(rs.getBoolean(dbQuery.isNullAble()));
+
+                if (StringUtils.isNotBlank(rs.getString(dbQuery.numericScale()))) {
+                    field.setNumericScale(rs.getInt(dbQuery.numericScale()));
+                    field.setNumericPrecision(rs.getInt(dbQuery.numericPrecision()));
+                } else {
+                    field.setCharacterMaximumLength(rs.getInt(dbQuery.characterMaximumLength()));
+                }
                 String key = rs.getString(dbQuery.fieldKey());
                 field.setPk(StringUtils.isNotBlank(key) && "PRI".equalsIgnoreCase(key));
 
                 tableFieldList.add(field);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
 

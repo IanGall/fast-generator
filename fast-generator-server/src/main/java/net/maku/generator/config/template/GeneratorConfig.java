@@ -1,5 +1,6 @@
 package net.maku.generator.config.template;
 
+import lombok.Data;
 import net.maku.generator.common.exception.FastException;
 import net.maku.generator.common.utils.JsonUtils;
 import org.apache.commons.lang.StringUtils;
@@ -7,22 +8,52 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StreamUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 @Configuration
+@Data
 public class GeneratorConfig {
     @Value("${fast.template}")
     private String template;
 
+    @Value("classpath:template")
+    private File path;
+
+    public List<String> getPaths(){
+        LinkedList<String> dirs = new LinkedList<>();
+        for (File file : Objects.requireNonNull(path.listFiles())) {
+            if (file.isDirectory()) {
+                dirs.add(file.getName());
+            }
+        }
+        return dirs;
+    };
+
+    // public List<File> getPaths(){
+    //     LinkedList<File> dirs = new LinkedList<>();
+    //     for (File file : Objects.requireNonNull(path.listFiles())) {
+    //         if (file.isDirectory()) {
+    //             dirs.add(file);
+    //         }
+    //     }
+    //     return dirs;
+    // };
+    //
+
     public GeneratorInfo getGeneratorConfig(){
-        if(StringUtils.isBlank(template)){
+        String template1 = getPaths().get(0);
+        if(StringUtils.isBlank(template1)){
             throw new FastException("模板不存在，需指定模板");
         }
 
         // 模板所在路径
-        String templatePath = "/template/" + template + "/";
+        String templatePath = "/template/" + template1 + "/";
 
         // 模板配置文件
         InputStream isConfig = this.getClass().getResourceAsStream(templatePath + "config.json");

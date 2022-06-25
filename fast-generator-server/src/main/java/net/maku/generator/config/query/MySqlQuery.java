@@ -41,8 +41,12 @@ public class MySqlQuery implements AbstractQuery {
 
     @Override
     public String tableFieldsSql() {
-        return "select column_name, data_type, column_comment, column_key from information_schema.columns "
-                + "where table_name = '%s' and table_schema = (select database()) order by ordinal_position";
+        return "select column_name, data_type, column_comment, column_key, character_maximum_length, numeric_precision, numeric_scale,\n" +
+                "       (IF(IS_NULLABLE = 'NO', true, false)) is_null_able\n" +
+                "from information_schema.columns\n" +
+                "where table_name = '%s'\n" +
+                "  and table_schema = (select database())\n" +
+                "order by ordinal_position;\n";
     }
 
     @Override

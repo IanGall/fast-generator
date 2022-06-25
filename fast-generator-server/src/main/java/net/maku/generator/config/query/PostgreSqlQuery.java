@@ -30,11 +30,22 @@ public class PostgreSqlQuery implements AbstractQuery {
 
     @Override
     public String tableFieldsSql() {
-        return "select t2.attname as columnName, pg_type.typname as dataType, col_description(t2.attrelid,t2.attnum) as columnComment,"
-                +"(CASE t3.contype WHEN 'p' THEN 'PRI' ELSE '' END) as columnKey "
-                +"from pg_class as t1, pg_attribute as t2 inner join pg_type on pg_type.oid = t2.atttypid "
-                +"left join pg_constraint t3 on t2.attnum = t3.conkey[1] and t2.attrelid = t3.conrelid "
-                +"where t1.relname = '%s' and t2.attrelid = t1.oid and t2.attnum>0";
+        return "select a.attname                                         as                                           columnName,\n" +
+                "       t.typname                                         as                                           dataType,\n" +
+                "       col_description(a.attrelid, a.attnum)             as                                           columnComment,\n" +
+                "       (CASE t3.contype WHEN 'p' THEN 'PRI' ELSE '' END) as                                           columnKey,\n" +
+                "       a.attnotnull                                      AS                                           is_null_able,\n" +
+                "       split_part(btrim(SUBSTRING(format_type(a.atttypid, a.atttypmod) from '\\(.*\\)'), '()'), ',', 2) numeric_scale,\n" +
+                "       split_part(btrim(SUBSTRING(format_type(a.atttypid, a.atttypmod) from '\\(.*\\)'), '()'), ',', 1) numeric_precision,\n" +
+                "       split_part(btrim(SUBSTRING(format_type(a.atttypid, a.atttypmod) from '\\(.*\\)'), '()'), ',',\n" +
+                "                  1)                                                                                  character_maximum_length\n" +
+                "from pg_class as c,\n" +
+                "     pg_attribute as a\n" +
+                "         inner join pg_type t on t.oid = a.atttypid\n" +
+                "         left join pg_constraint t3 on a.attnum = t3.conkey[1] and a.attrelid = t3.conrelid\n" +
+                "where c.relname = '%s'\n" +
+                "  and a.attrelid = c.oid\n" +
+                "  and a.attnum > 0";
     }
 
 

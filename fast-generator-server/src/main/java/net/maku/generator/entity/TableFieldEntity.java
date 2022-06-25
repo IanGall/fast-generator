@@ -35,6 +35,18 @@ public class TableFieldEntity {
      */
     private String columnType;
     /**
+     * 字符串最大长度
+     */
+    private Integer characterMaximumLength;
+    /**
+     * 数字精度
+     */
+    private Integer numericPrecision;
+    /**
+     * 数字刻度
+     */
+    private Integer numericScale;
+    /**
      * 列说明
      */
     private String columnComment;
