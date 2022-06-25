@@ -25,10 +25,16 @@ class DataDictionaryServiceTest {
         List<DataDictionaryEntity> list;
         try {
             // JSONUtils.type.set(new TypeReference<List<TableMap>>(){});
-            list = dataDictionaryService.getList();
+            for (DataDictionaryEntity dataDictionaryEntity : list = dataDictionaryService.getList()) {
+                List<TableMap> contentObj = dataDictionaryEntity.getContentObj(new TypeReference<List<TableMap>>() {
+                });
+                System.out.println(contentObj);
+
+
+            }
         } finally {
             // JSONUtils.type.remove();
         }
-        System.out.println(list);
+        // System.out.println(list);
     }
 }

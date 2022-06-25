@@ -8,8 +8,7 @@
         <result property="tableName" column="table_name"/>
         <result property="datasourceId" column="datasource_id"/>
         <result property="keyColumn" column="key_column"/>
-        <result property="content" column="content" javaType="java.util.List"
-        typeHandler="net.maku.generator.handler.DictContentTypeHandler"/>
+        <result property="content" column="content"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
 

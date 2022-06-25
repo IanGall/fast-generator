@@ -8,9 +8,8 @@ import com.baomidou.mybatisplus.extension.handlers.AbstractJsonTypeHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import lombok.*;
 import net.maku.generator.dto.TableMap;
 import net.maku.generator.utils.JSONUtils;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper=false)
 @TableName("data_dictionary")
-public class DataDictionaryEntity {
+public class DataDictionaryEntity  {
 	/**
 	* id
 	*/
@@ -50,41 +49,26 @@ public class DataDictionaryEntity {
 	private String keyColumn;
 
 	/**
-	* 内容
-	*/
-	private List<TableMap> content;
-
-	/**
 	* 创建时间
 	*/
 	@TableField(fill = FieldFill.INSERT)
 	private Date createTime;
 
-	// @Data
-	// @EqualsAndHashCode(callSuper=false)
-	// public static class TableMap{
-	// 	private String length;
-	// 	private String columnName;
-	// 	private String paramName;
-	// 	private String chineseName;
-	// }
+	/**
+	 * 内容
+	 */
+	private String content;
 
-	// @Component
-	// @RequiredArgsConstructor
-	// public static class DictContentTypeHandler extends AbstractJsonTypeHandler<List<TableMap>> {
-	//
-	// 	// private final ObjectMapper objectMapper;
-	//
-	// 	public ThreadLocal<TypeReference> type = new ThreadLocal<>();
-	//
-	// 	@Override
-	// 	protected List<TableMap> parse(String json) {
-	// 		return JSONUtils.string2Obj(json, type.get());
-	// 	}
-	//
-	// 	@Override
-	// 	protected String toJson(List<TableMap> obj) {
-	// 		return JSONUtils.obj2String(obj);
-	// 	}
-	// }
+	@TableField(exist = false)
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	private Object contentObj = null;
+
+	public <T> T getContentObj(TypeReference<T> typeReference) {
+		if (contentObj == null) {
+			contentObj = JSONUtils.string2Obj(content, typeReference);
+		}
+		return (T) contentObj;
+	}
+
 }
