@@ -1,6 +1,5 @@
 {
   "project": {
-    "templatePath": "fast-boot",
     "packageName": "net.maku",
     "version": "1.0.0",
     "backendPath": "D:\\generator\\fast-boot\\fast-server",

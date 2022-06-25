@@ -45,7 +45,8 @@ const dataForm = reactive({
 	datasourceList: [] as any,
 	tableInfoList: [] as any,
 	tableInfo: {
-		tableName: ''
+		tableName: '',
+		templatePath: 'fast-boot'
 	},
 	showTableSelect: false
 })
@@ -92,6 +93,8 @@ const dataRules = ref({
 // 表单提交
 const submitHandle = () => {
 	dataFormRef.value.validate((valid: boolean) => {
+		dataForm.tableInfo.templatePath = 'fast-boot'
+
 		if (!valid) {
 			return false
 		}
