@@ -4,15 +4,11 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.AbstractJsonTypeHandler;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.*;
-import net.maku.generator.dto.TableMap;
+import net.maku.generator.dto.ClearanceInfoTable;
+import net.maku.generator.enumration.DataDicType;
 import net.maku.generator.utils.JSONUtils;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +20,7 @@ import java.util.List;
  * @since 1.0.0 2022-06-25
  */
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper= false)
 @TableName("data_dictionary")
 public class DataDictionaryEntity  {
 	/**
@@ -64,9 +60,10 @@ public class DataDictionaryEntity  {
 	@Setter(AccessLevel.NONE)
 	private Object contentObj = null;
 
-	public <T> T getContentObj(TypeReference<T> typeReference) {
+	public <T> T getContentObj() {
 		if (contentObj == null) {
-			contentObj = JSONUtils.string2Obj(content, typeReference);
+			contentObj = JSONUtils.string2Obj(content, new TypeReference<T>() {
+			});
 		}
 		return (T) contentObj;
 	}

@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class TableMap{
+public class ClearanceInfoTable {
     private String length;
     private String columnName;
     private String paramName;

@@ -24,7 +24,7 @@ public class DataDictionaryController {
     private final DataDictionaryService dataDictionaryService;
 
     @GetMapping("page")
-    public Result<PageResult<DataDictionaryEntity>> page( Query query){
+    public Result<PageResult<DataDictionaryEntity>> page(Query query){
         PageResult<DataDictionaryEntity> page = dataDictionaryService.page(query);
 
         return Result.ok(page);
