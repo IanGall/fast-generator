@@ -8,6 +8,10 @@ export const useTableInfoListApi = (id: string) => {
 	return service.get('/gen/datasource/table/list/' + id)
 }
 
+export const listByDataSourceId = (id: number) => {
+	return service.get('/datadictionary/listByDataSourceId/' + id)
+}
+
 export const useImportTableSubmitApi = (dataForm: any) => {
 	return service.post('/gen/datasource/table', dataForm)
 }

@@ -17,4 +17,6 @@ public interface DataDictionaryService extends BaseService<DataDictionaryEntity>
     PageResult<DataDictionaryEntity> page(Query query);
 
     List<DataDictionaryEntity> getList();
+
+    List<DataDictionaryEntity> selectIdAndTableNameByDatasourceId(Long datasourceId);
 }

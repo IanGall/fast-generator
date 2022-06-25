@@ -8,6 +8,7 @@ import net.maku.generator.common.service.impl.BaseServiceImpl;
 import net.maku.generator.dao.DataDictionaryDao;
 import net.maku.generator.entity.DataDictionaryEntity;
 import net.maku.generator.service.DataDictionaryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,9 @@ import java.util.List;
  */
 @Service
 public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionaryDao, DataDictionaryEntity> implements DataDictionaryService {
+
+    @Autowired
+    private DataDictionaryDao dataDictionaryDao;
 
     @Override
     public PageResult<DataDictionaryEntity> page(Query query) {
@@ -35,4 +39,8 @@ public class DataDictionaryServiceImpl extends BaseServiceImpl<DataDictionaryDao
         return baseMapper.selectList(Wrappers.emptyWrapper());
     }
 
+    @Override
+    public List<DataDictionaryEntity> selectIdAndTableNameByDatasourceId(Long datasourceId) {
+        return dataDictionaryDao.selectIdAndTableNameByDatasourceId(datasourceId);
+    }
 }

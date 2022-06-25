@@ -35,6 +35,13 @@
 						</el-select>
 					</el-form-item>
 				</el-col>
+				<el-col :span="12">
+					<el-form-item prop="dataDicId" label="数据字典id">
+						<el-select v-model="dataForm.dataDicId" placeholder="数据字典id" style="width: 100%" clearable>
+							<el-option v-for="item in dataDicList" :key="item.id" :label="item.tableName" :value="item.id"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
 			</el-row>
 			<el-row>
 				<el-col :span="12">
@@ -91,7 +98,7 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useBaseClassListApi } from '@/api/baseClass'
-import { templatePathsApi, useGeneratorApi, useTableInfoApi, useTableSubmitApi } from '@/api/generator'
+import { listByDataSourceId, templatePathsApi, useGeneratorApi, useTableInfoApi, useTableSubmitApi } from '@/api/generator'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -99,9 +106,12 @@ const visible = ref(false)
 const dataFormRef = ref()
 const baseClassList = ref<any[]>([])
 const templatePathsList = ref<any[]>([])
+const dataDicList = ref<any[]>([])
 const dataForm = reactive({
 	id: '',
 	baseclassId: '',
+	datasourceId: 0,
+	dataDicId: 0,
 	backendPath: '',
 	templatePath: '',
 	frontendPath: '',
@@ -142,7 +152,11 @@ const getBaseClassList = () => {
 
 const getTableInfo = (id: number) => {
 	useTableInfoApi(id).then(res => {
+		console.log(res.data)
 		Object.assign(dataForm, res.data)
+		listByDataSourceId(dataForm.datasourceId).then(res => {
+			dataDicList.value = res.data
+		})
 	})
 }
 

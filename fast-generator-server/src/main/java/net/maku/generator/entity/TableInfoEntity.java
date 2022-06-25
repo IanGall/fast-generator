@@ -41,6 +41,10 @@ public class TableInfoEntity {
      */
     private String templatePath;
     /**
+     * 数据字典id
+     */
+    private Long dataDicId;
+    /**
      * 作者
      */
     private String author;

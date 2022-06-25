@@ -1,4 +1,6 @@
 package net.maku.generator.dao;
+import org.apache.ibatis.annotations.Param;
+import java.util.List;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import net.maku.generator.entity.DataDictionaryEntity;
@@ -12,5 +14,8 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper
 public interface DataDictionaryDao extends BaseMapper<DataDictionaryEntity> {
-	
+
+    List<DataDictionaryEntity> selectIdAndTableNameByDatasourceId(@Param("datasourceId")Long datasourceId);
+
+
 }

@@ -2,8 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="net.maku.generator.dao.DataDictionaryDao">
-
-    <resultMap type="net.maku.generator.entity.DataDictionaryEntity" id="dataDictionaryMap">
+    <!--<resultMap id="selectIdAndTableNameByDatasourceIdResult"-->
+    <!--           type="net.maku.generator.dao.SelectIdAndTableNameByDatasourceIdResult">-->
+    <!--    <result column="id" property="id"/>-->
+    <!--    <result column="table_name" property="tableName"/>-->
+    <!--</resultMap>-->
+    <resultMap type="net.maku.generator.entity.DataDictionaryEntity" id="BaseResultMap">
         <result property="id" column="id"/>
         <result property="tableName" column="table_name"/>
         <result property="datasourceId" column="datasource_id"/>
@@ -12,4 +16,18 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
+    <sql id="Base_Column_List">
+        id,
+        `table_name`,
+        datasource_id,
+        key_column,
+        content,
+        create_time
+    </sql>
+
+    <select id="selectIdAndTableNameByDatasourceId" resultMap="BaseResultMap">
+        select id, `table_name`
+        from data_dictionary
+        where datasource_id = #{datasourceId}
+    </select>
 </mapper>

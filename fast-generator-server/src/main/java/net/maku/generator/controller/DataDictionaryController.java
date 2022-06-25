@@ -37,6 +37,12 @@ public class DataDictionaryController {
         return Result.ok(entity);
     }
 
+    @GetMapping("listByDataSourceId/{dataSourceId}")
+    public Result<List<DataDictionaryEntity>> listByDataSourceId(@PathVariable("dataSourceId") Long id){
+
+        return Result.ok(dataDictionaryService.selectIdAndTableNameByDatasourceId(id));
+    }
+
     @PostMapping
     public Result<String> save(@RequestBody DataDictionaryEntity vo){
         dataDictionaryService.save(vo);
