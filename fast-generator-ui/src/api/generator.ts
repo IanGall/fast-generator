@@ -20,6 +20,10 @@ export const useGeneratorApi = (dataForm: any) => {
 	return service.post('/gen/generator', dataForm)
 }
 
+export const templatePathsApi = () => {
+	return service.get('/gen/templatePaths')
+}
+
 export const useTableFieldSubmitApi = (tableId: number, tableData: any) => {
 	return service.put('/gen/table/field/' + tableId, tableData)
 }

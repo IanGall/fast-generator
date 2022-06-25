@@ -5,6 +5,7 @@ import net.maku.generator.common.page.PageResult;
 import net.maku.generator.common.query.Query;
 import net.maku.generator.common.utils.Result;
 import net.maku.generator.config.DataSourceInfo;
+import net.maku.generator.config.template.GeneratorConfig;
 import net.maku.generator.entity.TableFieldEntity;
 import net.maku.generator.entity.TableInfoEntity;
 import net.maku.generator.service.GeneratorService;
@@ -108,5 +109,11 @@ public class GeneratorController {
         generatorService.generatorCode(tableInfo);
 
         return Result.ok();
+    }
+
+    @GetMapping("templatePaths")
+    public Result<List<String>> templatePaths(){
+
+        return Result.ok(generatorService.templatePaths());
     }
 }

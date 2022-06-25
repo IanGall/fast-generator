@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class BaseClassServiceTest {
 
@@ -34,6 +32,6 @@ class BaseClassServiceTest {
 
     @Test
     void name() {
-        System.out.println(generatorConfig.getGeneratorConfig());
+        System.out.println(generatorConfig.getGeneratorConfig("tableInfo.getTemplatePath()"));
     }
 }

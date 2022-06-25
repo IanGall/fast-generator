@@ -29,6 +29,15 @@
 			</el-row>
 			<el-row>
 				<el-col :span="12">
+					<el-form-item prop="templatePath" label="模板路径">
+						<el-select v-model="dataForm.templatePath" placeholder="模板路径" style="width: 100%" clearable>
+							<el-option v-for="item in templatePathsList" :key="item" :label="item" :value="item"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="12">
 					<el-form-item label="模块名" prop="moduleName">
 						<el-input v-model="dataForm.moduleName" placeholder="模块名"></el-input>
 					</el-form-item>
@@ -82,17 +91,19 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useBaseClassListApi } from '@/api/baseClass'
-import { useGeneratorApi, useTableInfoApi, useTableSubmitApi } from '@/api/generator'
+import { templatePathsApi, useGeneratorApi, useTableInfoApi, useTableSubmitApi } from '@/api/generator'
 
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
 const dataFormRef = ref()
 const baseClassList = ref<any[]>([])
+const templatePathsList = ref<any[]>([])
 const dataForm = reactive({
 	id: '',
 	baseclassId: '',
 	backendPath: '',
+	templatePath: '',
 	frontendPath: '',
 	packageName: '',
 	email: '',
@@ -122,6 +133,11 @@ const getBaseClassList = () => {
 	useBaseClassListApi().then(res => {
 		baseClassList.value = res.data
 	})
+
+	templatePathsApi().then(res => {
+		templatePathsList.value = res.data
+	})
+	console.log(templatePathsList.value)
 }
 
 const getTableInfo = (id: number) => {
@@ -134,6 +150,7 @@ const dataRules = ref({
 	tableName: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
 	tableComment: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
 	className: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	templatePath: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
 	packageName: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
 	author: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
 	backendPath: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],

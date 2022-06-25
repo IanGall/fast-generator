@@ -76,7 +76,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         table = DbUtils.getTablesInfo(info, tableInfo.getTableName());
 
         //代码生成器信息
-        GeneratorInfo generator = generatorConfig.getGeneratorConfig();
+        GeneratorInfo generator = generatorConfig.getGeneratorConfig(tableInfo.getTemplatePath());
 
         //保存表信息
         assert table != null;
@@ -214,7 +214,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         }
 
         //代码生成器信息
-        GeneratorInfo generator = generatorConfig.getGeneratorConfig();
+        GeneratorInfo generator = generatorConfig.getGeneratorConfig(tableInfo.getTemplatePath());
 
 
         //渲染模板并输出
@@ -229,6 +229,11 @@ public class GeneratorServiceImpl implements GeneratorService {
             FileUtils.writeStringToFile(new File(path), content, "utf-8");
             System.out.println(path);
         }
+    }
+
+    @Override
+    public List<String> templatePaths() {
+        return generatorConfig.getPaths();
     }
 
 }

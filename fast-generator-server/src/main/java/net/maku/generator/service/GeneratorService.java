@@ -20,4 +20,6 @@ public interface GeneratorService {
     void updateTableField(Long tableId, List<TableFieldEntity> tableFieldList);
 
     void generatorCode(TableInfoEntity tableInfo) throws Exception;
+
+    List<String> templatePaths();
 }

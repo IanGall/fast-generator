@@ -46,14 +46,14 @@ public class GeneratorConfig {
     // };
     //
 
-    public GeneratorInfo getGeneratorConfig(){
-        String template1 = getPaths().get(0);
-        if(StringUtils.isBlank(template1)){
+    public GeneratorInfo getGeneratorConfig(String path){
+        // String template1 = getPaths().get(0);
+        if(StringUtils.isBlank(path)){
             throw new FastException("模板不存在，需指定模板");
         }
 
         // 模板所在路径
-        String templatePath = "/template/" + template1 + "/";
+        String templatePath = "/template/" + path + "/";
 
         // 模板配置文件
         InputStream isConfig = this.getClass().getResourceAsStream(templatePath + "config.json");

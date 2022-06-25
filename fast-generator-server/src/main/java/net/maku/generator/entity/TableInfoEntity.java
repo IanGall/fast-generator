@@ -37,6 +37,10 @@ public class TableInfoEntity {
      */
     private String version;
     /**
+     * 模板路径
+     */
+    private String templatePath;
+    /**
      * 作者
      */
     private String author;
