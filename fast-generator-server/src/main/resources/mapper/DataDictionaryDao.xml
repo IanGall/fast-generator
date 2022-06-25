@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.maku.generator.dao.DataDictionaryDao">
+
+    <resultMap type="net.maku.generator.entity.DataDictionaryEntity" id="dataDictionaryMap">
+        <result property="id" column="id"/>
+        <result property="tableName" column="table_name"/>
+        <result property="datasourceId" column="datasource_id"/>
+        <result property="keyColumn" column="key_column"/>
+        <result property="content" column="content" javaType="java.util.List"
+        typeHandler="net.maku.generator.handler.DictContentTypeHandler"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+</mapper>
