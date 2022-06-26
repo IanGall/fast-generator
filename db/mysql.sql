@@ -59,8 +59,7 @@ create table gen_table_info
     create_time     datetime                         null comment '创建时间',
     template_path   varchar(200) default 'fast-boot' null comment '模板路径',
     data_dic_id     bigint                           null comment '数据字典id',
-    constraint table_name
-        unique (table_name)
+    table_owner     varchar(200) default ''          null
 )
     comment '代码生成表' charset = utf8mb4;
 
