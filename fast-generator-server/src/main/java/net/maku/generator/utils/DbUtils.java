@@ -139,10 +139,10 @@ public class DbUtils {
                 field.setRequired(rs.getBoolean(dbQuery.isNullAble()));
 
                 if (StringUtils.isNotBlank(rs.getString(dbQuery.numericScale()))) {
-                    field.setNumericScale(rs.getInt(dbQuery.numericScale()));
-                    field.setNumericPrecision(rs.getInt(dbQuery.numericPrecision()));
+                    field.setNumericScale(rs.getString(dbQuery.numericScale()));
+                    field.setNumericPrecision(rs.getString(dbQuery.numericPrecision()));
                 } else {
-                    field.setCharacterMaximumLength(rs.getInt(dbQuery.characterMaximumLength()));
+                    field.setCharacterMaximumLength(rs.getString(dbQuery.characterMaximumLength()));
                 }
                 String key = rs.getString(dbQuery.fieldKey());
                 field.setPk(StringUtils.isNotBlank(key) && "PRI".equalsIgnoreCase(key));

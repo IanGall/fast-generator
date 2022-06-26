@@ -37,15 +37,15 @@ public class TableFieldEntity {
     /**
      * 字符串最大长度
      */
-    private Integer characterMaximumLength;
+    private String characterMaximumLength;
     /**
      * 数字精度
      */
-    private Integer numericPrecision;
+    private String numericPrecision;
     /**
      * 数字刻度
      */
-    private Integer numericScale;
+    private String numericScale;
     /**
      * 列说明
      */
