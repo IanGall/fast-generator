@@ -39,11 +39,13 @@ public class PostgreSqlQuery implements AbstractQuery {
                 "       split_part(btrim(SUBSTRING(format_type(a.atttypid, a.atttypmod) from '\\(.*\\)'), '()'), ',', 1) numeric_precision,\n" +
                 "       split_part(btrim(SUBSTRING(format_type(a.atttypid, a.atttypmod) from '\\(.*\\)'), '()'), ',',\n" +
                 "                  1)                                                                                  character_maximum_length\n" +
-                "from pg_class as c,\n" +
+                "from (select *, pg_get_userbyid(relowner) as owner\n" +
+                "      from pg_class) as c,\n" +
                 "     pg_attribute as a\n" +
                 "         inner join pg_type t on t.oid = a.atttypid\n" +
                 "         left join pg_constraint t3 on a.attnum = t3.conkey[1] and a.attrelid = t3.conrelid\n" +
                 "where c.relname = '%s'\n" +
+                "  and c.owner = '%s'\n" +
                 "  and a.attrelid = c.oid\n" +
                 "  and a.attnum > 0";
     }

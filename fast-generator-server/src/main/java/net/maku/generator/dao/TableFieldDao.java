@@ -23,4 +23,7 @@ public interface TableFieldDao extends BaseMapper<TableFieldEntity> {
 
     int deleteByTableId(@Param("tableId")Long tableId);
 
+    List<TableFieldEntity> getByTableId(@Param("tableId")Long tableId);
+
+
 }

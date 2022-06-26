@@ -40,7 +40,7 @@ public class GeneratorController {
     public Result<TableInfoEntity> getTable(@PathVariable("id") Long id){
         TableInfoEntity table = tableInfoService.getById(id);
 
-        List<TableFieldEntity> fieldList = tableFieldService.getByTableName(table.getTableName());
+        List<TableFieldEntity> fieldList = tableFieldService.getByTableId(id);
         table.setFields(fieldList);
 
         return Result.ok(table);

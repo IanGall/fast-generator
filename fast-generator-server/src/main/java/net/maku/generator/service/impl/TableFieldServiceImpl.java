@@ -40,4 +40,9 @@ public class TableFieldServiceImpl extends BaseServiceImpl<TableFieldDao, TableF
     public int deleteByTableId(Long tableId) {
         return tableFieldDao.deleteByTableId(tableId);
     }
+
+    @Override
+    public List<TableFieldEntity> getByTableId(Long tableId) {
+        return tableFieldDao.getByTableId(tableId);
+    }
 }

@@ -105,10 +105,11 @@ public class DbUtils {
     /**
      * 获取表的列属性
      *
-     * @param info      数据库配置文件
-     * @param tableName 表名
+     * @param info       数据库配置文件
+     * @param tableName  表名
+     * @param tableOwner
      */
-    public static List<TableFieldEntity> getTableColumns(DataSourceInfo info, Long tableId, String tableName) {
+    public static List<TableFieldEntity> getTableColumns(DataSourceInfo info, Long tableId, String tableName, String tableOwner) {
         List<TableFieldEntity> tableFieldList = new ArrayList<>();
 
         try {
@@ -117,6 +118,8 @@ public class DbUtils {
             if (info.getDbType() == DbType.Oracle) {
                 DatabaseMetaData md = info.getConnection().getMetaData();
                 tableFieldsSql = String.format(tableFieldsSql.replace("#schema", md.getUserName()), tableName);
+            } else if (info.getDbType() == DbType.PostgreSQL) {
+                tableFieldsSql = String.format(tableFieldsSql, tableName,tableOwner);
             } else {
                 tableFieldsSql = String.format(tableFieldsSql, tableName);
             }

@@ -88,8 +88,8 @@ return this.errorInfo;
       @Column(name = "${filed.columnName}")
       @ColumnFiled(name = "<#if filed.columnComment!?length gt 0>${filed.columnComment}<#else>${filed.attrName}</#if>")
         <#if filed.paramNameList??&&(filed.paramNameList?size>0)>
-            <#list filed.paramNameList as value>
-            </#list>
+<#--            <#list filed.paramNameList as value>-->
+<#--            </#list>-->
           @JsonAlias({<#list filed.paramNameList as value>"${value}"<#if value_index != (filed.paramNameList?size-1)>,</#if></#list>})
         </#if>
       private ${filed.attrType} ${filed.attrName};

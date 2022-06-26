@@ -19,4 +19,6 @@ public interface TableFieldService extends BaseService<TableFieldEntity> {
     void deleteBatchTableIds(Long[] tableIds);
 
     int deleteByTableId(Long tableId);
+
+    List<TableFieldEntity> getByTableId(Long tableId);
 }

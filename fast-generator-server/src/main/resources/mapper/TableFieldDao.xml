@@ -71,4 +71,11 @@
         delete from gen_table_field
         where table_id=#{tableId}
     </delete>
+
+<select id="getByTableId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gen_table_field
+        where table_id=#{tableId}
+    </select>
 </mapper>

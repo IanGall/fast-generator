@@ -68,7 +68,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         //初始化配置信息
         DataSourceInfo info = getDataSourceInfo(tableInfo.getDatasourceId());
 
-        TableInfoEntity table = tableInfoService.getByTableNameAndTableOwner(tableInfo.getTableName(),tableInfo.getTableOwner());
+        TableInfoEntity table = tableInfoService.getByTableNameAndTableOwner(tableInfo.getTableName(), tableInfo.getTableOwner());
         //表存在
         if (table != null) {
             throw new FastException(tableInfo.getTableName() + "数据表已存在");
@@ -91,7 +91,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         tableInfoService.save(table);
 
         //获取原生列数据
-        List<TableFieldEntity> tableFieldList = DbUtils.getTableColumns(info, table.getId(), tableInfo.getTableName());
+        List<TableFieldEntity> tableFieldList = DbUtils.getTableColumns(info, table.getId(), tableInfo.getTableName(),tableInfo.getTableOwner());
         //初始化列数据
         initFieldList(tableFieldList);
         //批量保存列数据
