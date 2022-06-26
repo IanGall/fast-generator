@@ -60,10 +60,9 @@ public class DataDictionaryEntity  {
 	@Setter(AccessLevel.NONE)
 	private Object contentObj = null;
 
-	public <T> T getContentObj() {
+	public <T> T getContentObj(TypeReference<T> typeReference) {
 		if (contentObj == null) {
-			contentObj = JSONUtils.string2Obj(content, new TypeReference<T>() {
-			});
+			contentObj = JSONUtils.string2Obj(content, typeReference);
 		}
 		return (T) contentObj;
 	}

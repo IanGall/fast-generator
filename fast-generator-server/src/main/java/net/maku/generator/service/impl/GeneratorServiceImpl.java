@@ -2,16 +2,15 @@ package net.maku.generator.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.maku.generator.common.enumration.DataDictionary;
 import net.maku.generator.common.exception.FastException;
 import net.maku.generator.common.utils.DateUtils;
 import net.maku.generator.config.DataSourceInfo;
 import net.maku.generator.config.template.GeneratorConfig;
 import net.maku.generator.config.template.GeneratorInfo;
 import net.maku.generator.config.template.TemplateInfo;
-import net.maku.generator.entity.BaseClassEntity;
-import net.maku.generator.entity.FieldTypeEntity;
-import net.maku.generator.entity.TableFieldEntity;
-import net.maku.generator.entity.TableInfoEntity;
+import net.maku.generator.dto.ClearanceInfoTable;
+import net.maku.generator.entity.*;
 import net.maku.generator.service.*;
 import net.maku.generator.utils.DbUtils;
 import net.maku.generator.utils.GenUtils;
@@ -42,6 +41,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     private final FieldTypeService fieldTypeService;
     private final BaseClassService baseClassService;
     private final DataSource dataSource;
+    private final DataDictionaryService dataDictionaryService;
     private final GeneratorConfig generatorConfig;
 
     @Override
@@ -69,7 +69,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         TableInfoEntity table = tableInfoService.getByTableName(tableInfo.getTableName());
         //表存在
-        if(table != null){
+        if (table != null) {
             throw new FastException(tableInfo.getTableName() + "数据表已存在");
         }
 
@@ -98,19 +98,19 @@ public class GeneratorServiceImpl implements GeneratorService {
         try {
             //释放数据源
             info.getConnection().close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             log.error(e.getMessage(), e);
         }
     }
 
     @Override
-    public void updateTableField(Long tableId, List<TableFieldEntity> tableFieldList){
+    public void updateTableField(Long tableId, List<TableFieldEntity> tableFieldList) {
         //删除旧列信息
         tableFieldService.deleteBatchTableIds(new Long[]{tableId});
 
         //保存新列数据
         int sort = 0;
-        for(TableFieldEntity tableField : tableFieldList){
+        for (TableFieldEntity tableField : tableFieldList) {
             tableField.setSort(sort++);
             tableFieldService.save(tableField);
         }
@@ -120,18 +120,18 @@ public class GeneratorServiceImpl implements GeneratorService {
     /**
      * 初始化列数据
      */
-    private void initFieldList(List<TableFieldEntity> tableFieldList){
+    private void initFieldList(List<TableFieldEntity> tableFieldList) {
         //字段类型、属性类型映射
         Map<String, FieldTypeEntity> fieldTypeMap = fieldTypeService.getMap();
         int index = 0;
-        for(TableFieldEntity tableField : tableFieldList){
+        for (TableFieldEntity tableField : tableFieldList) {
             tableField.setAttrName(StringUtils.uncapitalize(GenUtils.columnToJava(tableField.getColumnName())));
             //获取字段对应的类型
             FieldTypeEntity fieldTypeMapping = fieldTypeMap.get(tableField.getColumnType().toLowerCase());
-            if(fieldTypeMapping == null){
+            if (fieldTypeMapping == null) {
                 //没找到对应的类型，则为Object类型
                 tableField.setAttrType("Object");
-            }else {
+            } else {
                 tableField.setAttrType(fieldTypeMapping.getAttrType());
                 tableField.setPackageName(fieldTypeMapping.getPackageName());
             }
@@ -148,7 +148,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void generatorCode(TableInfoEntity tableInfo) throws Exception{
+    public void generatorCode(TableInfoEntity tableInfo) throws Exception {
         //删除旧表信息
         tableInfoService.deleteByTableName(tableInfo.getTableName());
         //删除旧列信息
@@ -156,8 +156,12 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         //保存新表信息
         tableInfoService.save(tableInfo);
+
+        List<TableFieldEntity> fields = tableInfo.getFields();
         //保存新列信息
-        tableFieldService.saveBatch(tableInfo.getFields());
+        tableFieldService.saveBatch(fields);
+
+        handleFields(tableInfo, fields);
 
         //数据模型
         Map<String, Object> dataModel = new HashMap<>();
@@ -167,13 +171,13 @@ public class GeneratorServiceImpl implements GeneratorService {
         dataModel.put("version", tableInfo.getVersion());
 
         String moduleName = tableInfo.getModuleName();
-        if(StringUtils.isBlank(moduleName)){
+        if (StringUtils.isBlank(moduleName)) {
             moduleName = null;
         }
         dataModel.put("moduleName", moduleName);
 
         String subModuleName = tableInfo.getSubModuleName();
-        if(StringUtils.isBlank(subModuleName)){
+        if (StringUtils.isBlank(subModuleName)) {
             subModuleName = null;
         }
         dataModel.put("subModuleName", subModuleName);
@@ -190,11 +194,11 @@ public class GeneratorServiceImpl implements GeneratorService {
         dataModel.put("ClassName", tableInfo.getClassName());
         dataModel.put("className", StringUtils.uncapitalize(tableInfo.getClassName()));
         dataModel.put("classname", tableInfo.getClassName().toLowerCase());
-        dataModel.put("columnList", tableInfo.getFields());
+        dataModel.put("columnList", fields);
 
         //主键
-        for(TableFieldEntity tableField : tableInfo.getFields()){
-            if(tableField.isPk()){
+        for (TableFieldEntity tableField : fields) {
+            if (tableField.isPk()) {
                 dataModel.put("pk", tableField);
                 break;
             }
@@ -207,7 +211,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         dataModel.put("imports", imports);
 
         //基类
-        if(tableInfo.getBaseclassId() != null){
+        if (tableInfo.getBaseclassId() != null) {
             BaseClassEntity baseClassEntity = baseClassService.getById(tableInfo.getBaseclassId());
             baseClassEntity.setPackageName(GenUtils.getTemplateContent(baseClassEntity.getPackageName(), dataModel));
             dataModel.put("baseClassEntity", baseClassEntity);
@@ -218,7 +222,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
 
         //渲染模板并输出
-        for(TemplateInfo template : generator.getTemplates()){
+        for (TemplateInfo template : generator.getTemplates()) {
             dataModel.put("templateName", template.getTemplateName());
             if (StringUtils.isNotBlank(template.getPackageName())) {
                 dataModel.put("package", template.getPackageName());
@@ -231,6 +235,34 @@ public class GeneratorServiceImpl implements GeneratorService {
             FileUtils.writeStringToFile(new File(path), content, "utf-8");
             System.out.println(path);
         }
+    }
+
+    private void handleFields(TableInfoEntity tableInfo, List<TableFieldEntity> fields) {
+        DataDictionaryEntity dataDic = dataDictionaryService.getById(tableInfo.getDataDicId());
+        if (dataDic == null) {
+            return;
+        }
+        List<ClearanceInfoTable> contentObjs = dataDic.getContentObj(DataDictionary.CLEARANCE_INFO.getTypeReference());
+        // LinkedHashMap<String, ClearanceInfoTable> columnNameToTableObj = contentObj.stream()
+        //         .collect(Collectors.toMap(ClearanceInfoTable::getColumnName, clearanceInfoTable -> clearanceInfoTable
+        //                 , (o1, o2) -> o1, LinkedHashMap::new));
+        //
+        // columnNameToTableObj.in
+
+        Map<String, TableFieldEntity> columnNameToField = fields.stream()
+                .collect(Collectors.toMap(TableFieldEntity::getColumnName, tableFieldEntity -> tableFieldEntity));
+
+        for (int i = 0; i < contentObjs.size(); i++) {
+            ClearanceInfoTable table = contentObjs.get(i);
+            TableFieldEntity field = columnNameToField.get(table.getColumnName());
+            if (field == null) {
+                continue;
+            }
+            field.getParamNameList().add(table.getParamName());
+            field.setDicOrder(i);
+        }
+
+        fields.sort(Comparator.comparingInt(TableFieldEntity::getDicOrder));
     }
 
     @Override

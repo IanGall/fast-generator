@@ -30,63 +30,68 @@ import java.util.Date;
 @Table(name = "${tableName}")
 public class ${ClassName}<#if baseClassEntity??> extends ${baseClassEntity.code}</#if> {
 
-    @Override
-    public String generateBizId() {
-      return null;
-    }
+@Override
+public String generateBizId() {
+return null;
+}
 
-    @Override
-    public String specificCheck() {
-      return null;
-    }
+@Override
+public String specificCheck() {
+return null;
+}
 
-    @Override
-    public void generateDefaultField() {
+@Override
+public void generateDefaultField() {
 
-    }
+}
 
-    /**
-    * 错误信息
-    */
-    @Transient
-    private String errorMsg;
+/**
+* 错误信息
+*/
+@Transient
+private String errorMsg;
 
-    public String getErrorMsg() {
-    return this.errorInfo;
-    }
+public String getErrorMsg() {
+return this.errorInfo;
+}
 
 
-<#list columnList as column>
-    <#if (baseClassEntity?? && baseClassEntity.fields?split(",")?seq_contains(column.attrName))
-    || "errorMsg"?split(",")?seq_contains(column.attrName)>
+<#list columnList as filed>
+    <#if (baseClassEntity?? && baseClassEntity.fields?split(",")?seq_contains(filed.attrName))
+    || "errorMsg"?split(",")?seq_contains(filed.attrName)>
     <#else>
 
-        <#if column.columnComment!?length gt 0>
+        <#if filed.columnComment!?length gt 0>
           /**
-          * ${column.columnComment}
+          * ${filed.columnComment}
           */
         </#if>
-        <#if column.required>
-            <#if "String,BigDecimal"?split(",")?seq_contains(column.attrType)>
-              @NotEmpty(message = "<#if column.columnComment!?length gt 0>${column.columnComment}<#else>${column.attrName}</#if>不能为空！")
+        <#if filed.required>
+            <#if "String,BigDecimal"?split(",")?seq_contains(filed.attrType)>
+              @NotEmpty(message = "<#if filed.columnComment!?length gt 0>${filed.columnComment}<#else>${filed.attrName}</#if>不能为空！")
             </#if>
-            <#if "Date"?split(",")?seq_contains(column.attrType)>
-              @NotNull(message = "<#if column.columnComment!?length gt 0>${column.columnComment}<#else>${column.attrName}</#if>不能为空！")
+            <#if "Date"?split(",")?seq_contains(filed.attrType)>
+              @NotNull(message = "<#if filed.columnComment!?length gt 0>${filed.columnComment}<#else>${filed.attrName}</#if>不能为空！")
             </#if>
         </#if>
-        <#if column.attrType == 'String' && (column.characterMaximumLength!?length gt 0)>
-          @XdoSize(max = ${column.characterMaximumLength}, message = "<#if column.columnComment!?length gt 0>${column.columnComment}<#else>${column.attrName}</#if>长度不能超过${column.characterMaximumLength}位字节长度(一个汉字2位字节长度)!")
+        <#if filed.attrType == 'String' && (filed.characterMaximumLength!?length gt 0)>
+          @XdoSize(max = ${filed.characterMaximumLength}, message = "<#if filed.columnComment!?length gt 0>${filed.columnComment}<#else>${filed.attrName}</#if>长度不能超过${filed.characterMaximumLength}位字节长度(一个汉字2位字节长度)!")
         </#if>
-        <#if column.attrType == 'BigDecimal' && (column.numericPrecision!?length gt 0) && (column.numericScale!?length gt 0)>
-          @Digits(integer = ${column.numericPrecision}, fraction = ${column.numericScale}, message = "<#if column.columnComment!?length gt 0>${column.columnComment}<#else>${column.attrName}</#if>必须为数字,整数位最大${column.numericPrecision}位,小数最大${column.numericScale}位!")
+        <#if filed.attrType == 'BigDecimal' && (filed.numericPrecision!?length gt 0) && (filed.numericScale!?length gt 0)>
+          @Digits(integer = ${filed.numericPrecision}, fraction = ${filed.numericScale}, message = "<#if filed.columnComment!?length gt 0>${filed.columnComment}<#else>${filed.attrName}</#if>必须为数字,整数位最大${filed.numericPrecision}位,小数最大${filed.numericScale}位!")
         </#if>
-        <#if column.attrType == 'Date'>
+        <#if filed.attrType == 'Date'>
           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
           @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
         </#if>
-      @Column(name = "${column.columnName}")
-      @ColumnFiled(name = "<#if column.columnComment!?length gt 0>${column.columnComment}<#else>${column.attrName}</#if>")
-      private ${column.attrType} ${column.attrName};
+      @Column(name = "${filed.columnName}")
+      @ColumnFiled(name = "<#if filed.columnComment!?length gt 0>${filed.columnComment}<#else>${filed.attrName}</#if>")
+        <#if filed.paramNameList??&&(filed.paramNameList?size>0)>
+            <#list filed.paramNameList as value>
+            </#list>
+          @JsonAlias({<#list filed.paramNameList as value>"${value}"<#if value_index != (filed.paramNameList?size-1)>,</#if></#list>})
+        </#if>
+      private ${filed.attrType} ${filed.attrName};
     </#if>
 </#list>
 

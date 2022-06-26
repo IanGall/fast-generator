@@ -1,10 +1,24 @@
 package net.maku.generator.common.enumration;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import net.maku.generator.dto.ClearanceInfoTable;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public enum DataDictionary {
 
-    TABLE_EXTRA_INFO,
+    CLEARANCE_INFO(new TypeReference<List<ClearanceInfoTable>>() {
+    }),
     ;
 
-    private String tableName;
-    private String dataSourceId;
+    DataDictionary(TypeReference<?> typeReference) {
+        this.typeReference = typeReference;
+    }
+
+    private final TypeReference<?> typeReference;
+
+    public <T> TypeReference<T> getTypeReference() {
+        return (TypeReference<T>) typeReference;
+    }
 }

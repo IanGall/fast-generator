@@ -1,6 +1,7 @@
 package net.maku.generator.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import net.maku.generator.common.enumration.DataDictionary;
 import net.maku.generator.dto.ClearanceInfoTable;
 import net.maku.generator.entity.DataDictionaryEntity;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class DataDictionaryServiceTest {
         try {
             // JSONUtils.type.set(new TypeReference<List<TableMap>>(){});
             for (DataDictionaryEntity dataDictionaryEntity : list = dataDictionaryService.getList()) {
-                List<ClearanceInfoTable> contentObj = dataDictionaryEntity.getContentObj();
+                List<ClearanceInfoTable> contentObj = dataDictionaryEntity.getContentObj(DataDictionary.CLEARANCE_INFO.getTypeReference());
                 System.out.println(contentObj);
 
 

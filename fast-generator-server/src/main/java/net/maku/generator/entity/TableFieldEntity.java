@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.util.Date;
+import java.util.*;
 
 /**
  * 表字段信息
@@ -112,4 +112,18 @@ public class TableFieldEntity {
      */
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
+
+
+    /**
+     * json别名
+     */
+    @TableField(exist = false)
+    private List<String> paramNameList = new LinkedList<>();
+
+    /**
+     * 数据字典顺序
+     */
+    @TableField(exist = false)
+    private Integer dicOrder = Integer.MAX_VALUE;
+
 }

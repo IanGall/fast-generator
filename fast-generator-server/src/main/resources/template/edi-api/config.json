@@ -13,7 +13,7 @@
 
     {
       "templateName": "ediEntityHead.ftl",
-      "packageName": "com.dcjet.edi.biz",
+      "packageName": "com.dcjet.edi.biz.model",
       "module": "ics-edi-core",
       "generatorPath": "${backendPath}/${module}/src/main/java/${packagePath}/${moduleName!}/entity/${subModuleName!}/${ClassName}.java"
     }
