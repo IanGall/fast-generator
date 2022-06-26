@@ -2,6 +2,7 @@ package net.maku.generator.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,10 @@ public class TableInfoEntity {
      * 表名
      */
     private String tableName;
+    /**
+     * 表名
+     */
+    private String tableOwner;
     /**
      * 实体类名称
      */
@@ -92,5 +97,27 @@ public class TableInfoEntity {
      */
     @TableField(exist = false)
     private TableFieldEntity key;
+    /**
+     * 标签
+     */
+    @TableField(exist = false)
+    private String label;
 
+    public String getLabel() {
+        if (label == null) {
+            if (StringUtils.isNotBlank(tableOwner)) {
+                label = tableOwner + "." + tableName;
+            } else {
+                label = tableName;
+            }
+        }
+        return label;
+    }
+
+    // public String getLabel() {
+    //         if (StringUtils.isNotBlank(tableOwner)) {
+    //             tableName = tableOwner + "." + tableName;
+    //         }
+    //     return label;
+    // }
 }

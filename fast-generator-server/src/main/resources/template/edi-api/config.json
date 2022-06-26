@@ -1,21 +1,29 @@
 {
   "project": {
     "packageName": "com.dcjet",
+    "projectName": "edi",
     "version": "1.0.0",
-    "backendPath": "C:\\generator\\fast-boot\\fast-server",
-    "frontendPath": "C:\\generator\\fast-admin"
+    "backendPath": "\\backend",
+    "frontendPath": "\\frontend"
   },
   "developer": {
     "author": "阿沐",
     "email": "babamu@126.com"
   },
   "templates": [
-
     {
-      "templateName": "ediEntityHead.ftl",
+      "templateType": "entity",
+      "templateName": "ediHeadEntity.ftl",
       "packageName": "com.dcjet.edi.biz.model",
       "module": "ics-edi-core",
-      "generatorPath": "${backendPath}/${module}/src/main/java/${packagePath}/${moduleName!}/entity/${subModuleName!}/${ClassName}.java"
+      "generatorPath": "${backendPath}/${module}/src/main/java/${packagePath}/${moduleName!}/${subModuleName!}/${ClassName}.java"
+    },
+    {
+      "templateType": "dao",
+      "templateName": "ediHeadDao.java.ftl",
+      "packageName": "com.dcjet.edi.biz.dao",
+      "module": "ics-edi-core",
+      "generatorPath": "${backendPath}/${module}/src/main/java/${packagePath}/${moduleName!}/${subModuleName!}/${ClassName}Dao.java"
     }
   ]
 }

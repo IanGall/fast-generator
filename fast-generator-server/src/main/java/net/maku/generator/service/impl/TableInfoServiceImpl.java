@@ -9,6 +9,7 @@ import net.maku.generator.dao.TableInfoDao;
 import net.maku.generator.entity.TableInfoEntity;
 import net.maku.generator.service.TableFieldService;
 import net.maku.generator.service.TableInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -23,6 +24,8 @@ import java.util.Arrays;
 @AllArgsConstructor
 public class TableInfoServiceImpl extends BaseServiceImpl<TableInfoDao, TableInfoEntity> implements TableInfoService {
     private final TableFieldService tableFieldService;
+    @Autowired
+    private TableInfoDao tableInfoDao;
 
     @Override
     public PageResult<TableInfoEntity> page(Query query) {
@@ -50,5 +53,10 @@ public class TableInfoServiceImpl extends BaseServiceImpl<TableInfoDao, TableInf
 
         //删除列
         tableFieldService.deleteBatchTableIds(ids);
+    }
+
+    @Override
+    public TableInfoEntity getByTableNameAndTableOwner(String tableName, String tableOwner) {
+        return tableInfoDao.getByTableNameAndTableOwner(tableName, tableOwner);
     }
 }

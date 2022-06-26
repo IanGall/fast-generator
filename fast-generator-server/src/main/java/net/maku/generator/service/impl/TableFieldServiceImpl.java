@@ -4,6 +4,7 @@ import net.maku.generator.common.service.impl.BaseServiceImpl;
 import net.maku.generator.dao.TableFieldDao;
 import net.maku.generator.entity.TableFieldEntity;
 import net.maku.generator.service.TableFieldService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,9 @@ import java.util.List;
  */
 @Service
 public class TableFieldServiceImpl extends BaseServiceImpl<TableFieldDao, TableFieldEntity> implements TableFieldService {
+
+    @Autowired
+    private TableFieldDao tableFieldDao;
 
     @Override
     public List<TableFieldEntity> getByTableName(String tableName) {
@@ -32,4 +36,8 @@ public class TableFieldServiceImpl extends BaseServiceImpl<TableFieldDao, TableF
         baseMapper.deleteBatchTableIds(tableIds);
     }
 
+    @Override
+    public int deleteByTableId(Long tableId) {
+        return tableFieldDao.deleteByTableId(tableId);
+    }
 }

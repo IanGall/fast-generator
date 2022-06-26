@@ -102,8 +102,6 @@ public class GeneratorController {
      */
     @PostMapping("generator")
     public Result<String> generator(@RequestBody TableInfoEntity tableInfo) throws Exception {
-        //保存表信息
-        tableInfoService.updateById(tableInfo);
 
         //生成代码
         generatorService.generatorCode(tableInfo);

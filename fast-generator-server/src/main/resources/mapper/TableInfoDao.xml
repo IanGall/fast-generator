@@ -2,7 +2,46 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="net.maku.generator.dao.TableInfoDao">
-
+    <sql id="Base_Column_List">
+        id,
+        `table_name`,
+        table_owner,
+        class_name,
+        table_comment,
+        package_name,
+        version,
+        template_path,
+        data_dic_id,
+        author,
+        email,
+        backend_path,
+        frontend_path,
+        module_name,
+        sub_module_name,
+        datasource_id,
+        baseclass_id,
+        create_time
+    </sql>
+    <resultMap id="BaseResultMap" type="net.maku.generator.entity.TableInfoEntity">
+        <result column="id" property="id"/>
+        <result column="table_name" property="tableName"/>
+        <result column="table_owner" property="tableOwner"/>
+        <result column="class_name" property="className"/>
+        <result column="table_comment" property="tableComment"/>
+        <result column="package_name" property="packageName"/>
+        <result column="version" property="version"/>
+        <result column="template_path" property="templatePath"/>
+        <result column="data_dic_id" property="dataDicId"/>
+        <result column="author" property="author"/>
+        <result column="email" property="email"/>
+        <result column="backend_path" property="backendPath"/>
+        <result column="frontend_path" property="frontendPath"/>
+        <result column="module_name" property="moduleName"/>
+        <result column="sub_module_name" property="subModuleName"/>
+        <result column="datasource_id" property="datasourceId"/>
+        <result column="baseclass_id" property="baseclassId"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
     <select id="getByTableName" resultType="net.maku.generator.entity.TableInfoEntity">
         select * from gen_table_info where table_name = #{value}
     </select>
@@ -11,4 +50,10 @@
         delete from gen_table_info where table_name = #{value}
     </delete>
 
+<select id="getByTableNameAndTableOwner" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gen_table_info
+        where `table_name`=#{tableName} and table_owner=#{tableOwner}
+    </select>
 </mapper>

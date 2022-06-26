@@ -1,4 +1,5 @@
 package net.maku.generator.dao;
+import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import net.maku.generator.entity.TableFieldEntity;
@@ -19,4 +20,7 @@ public interface TableFieldDao extends BaseMapper<TableFieldEntity> {
     void deleteByTableName(String tableName);
 
     void deleteBatchTableIds(Long[] tableIds);
+
+    int deleteByTableId(@Param("tableId")Long tableId);
+
 }

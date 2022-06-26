@@ -1,4 +1,5 @@
 package net.maku.generator.dao;
+import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import net.maku.generator.entity.TableInfoEntity;
@@ -14,4 +15,8 @@ public interface TableInfoDao extends BaseMapper<TableInfoEntity> {
     TableInfoEntity getByTableName(String tableName);
 
     void deleteByTableName(String tableName);
+
+    TableInfoEntity getByTableNameAndTableOwner(@Param("tableName")String tableName, @Param("tableOwner")String tableOwner);
+
+
 }

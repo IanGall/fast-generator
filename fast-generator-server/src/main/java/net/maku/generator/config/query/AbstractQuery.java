@@ -72,4 +72,8 @@ public interface AbstractQuery {
     default String isNullAble() {
         return "is_null_able";
     }
+
+    default String tableOwner(){
+        return "tableowner";
+    }
 }

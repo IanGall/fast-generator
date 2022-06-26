@@ -27,7 +27,7 @@ class BaseClassServiceTest {
 
     @Test
     void page() {
-        System.out.println(tempDir);
+        System.out.println(generatorConfig.getUserHome());
     }
 
     @Test

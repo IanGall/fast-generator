@@ -20,4 +20,8 @@ public class ProjectInfo {
      * 前端生成路径
      */
     private String frontendPath;
+    /**
+     * 项目名
+     */
+    private String projectName;
 }

@@ -25,7 +25,11 @@ public class GeneratorConfig {
     @Value("classpath:template")
     private File path;
 
-    public List<String> getPaths(){
+
+    @Value("${user.home}")
+    private String userHome;
+
+    public List<String> getPaths() {
         LinkedList<String> dirs = new LinkedList<>();
         for (File file : Objects.requireNonNull(path.listFiles())) {
             if (file.isDirectory()) {
@@ -33,7 +37,9 @@ public class GeneratorConfig {
             }
         }
         return dirs;
-    };
+    }
+
+    ;
 
     // public List<File> getPaths(){
     //     LinkedList<File> dirs = new LinkedList<>();
@@ -46,9 +52,9 @@ public class GeneratorConfig {
     // };
     //
 
-    public GeneratorInfo getGeneratorConfig(String path){
+    public GeneratorInfo getGeneratorConfig(String path) {
         // String template1 = getPaths().get(0);
-        if(StringUtils.isBlank(path)){
+        if (StringUtils.isBlank(path)) {
             throw new FastException("模板不存在，需指定模板");
         }
 
@@ -57,7 +63,7 @@ public class GeneratorConfig {
 
         // 模板配置文件
         InputStream isConfig = this.getClass().getResourceAsStream(templatePath + "config.json");
-        if(isConfig == null){
+        if (isConfig == null) {
             throw new FastException("模板配置文件，config.json不存在");
         }
 
@@ -66,10 +72,18 @@ public class GeneratorConfig {
             String configContent = StreamUtils.copyToString(isConfig, StandardCharsets.UTF_8);
             GeneratorInfo info = JsonUtils.parseObject(configContent, GeneratorInfo.class);
             assert info != null;
-            for(TemplateInfo templateInfo : info.getTemplates()){
+
+            ProjectInfo project = info.getProject();
+            String defaultPath = userHome + "\\generator";
+            if (StringUtils.isNotBlank(project.getProjectName())) {
+                defaultPath = defaultPath + "\\" + project.getProjectName();
+            }
+            project.setBackendPath(defaultPath + project.getBackendPath());
+            project.setFrontendPath(defaultPath + project.getFrontendPath());
+            for (TemplateInfo templateInfo : info.getTemplates()) {
                 // 模板文件
                 InputStream isTemplate = this.getClass().getResourceAsStream(templatePath + templateInfo.getTemplateName());
-                if(isTemplate == null){
+                if (isTemplate == null) {
                     throw new FastException("模板文件 " + templateInfo.getTemplateName() + " 不存在");
                 }
                 // 读取模板内容

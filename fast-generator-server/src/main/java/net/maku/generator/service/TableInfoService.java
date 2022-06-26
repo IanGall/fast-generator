@@ -19,4 +19,6 @@ public interface TableInfoService extends BaseService<TableInfoEntity> {
     void deleteByTableName(String tableName);
 
     void deleteBatchIds(Long[] ids);
+
+    TableInfoEntity getByTableNameAndTableOwner(String tableName, String tableOwner);
 }

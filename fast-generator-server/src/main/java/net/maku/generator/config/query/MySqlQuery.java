@@ -18,7 +18,7 @@ public class MySqlQuery implements AbstractQuery {
     @Override
     public String tablesSql(String tableName) {
         StringBuilder sql = new StringBuilder();
-        sql.append("select table_name, table_comment from information_schema.tables ");
+        sql.append("select table_name, table_comment,TABLE_SCHEMA tableowner from information_schema.tables ");
         sql.append("where table_schema = (select database()) ");
         //表名查询
         if(StringUtils.isNotBlank(tableName)){

@@ -59,6 +59,7 @@ public class DbUtils {
             if (rs.next()) {
                 TableInfoEntity tableInfo = new TableInfoEntity();
                 tableInfo.setTableName(rs.getString(dbQuery.tableName()));
+                tableInfo.setTableOwner(rs.getString(dbQuery.tableOwner()));
                 tableInfo.setClassName(GenUtils.columnToJava(tableInfo.getTableName()));
                 tableInfo.setTableComment(rs.getString(dbQuery.tableComment()));
                 tableInfo.setDatasourceId(info.getId());
@@ -85,6 +86,7 @@ public class DbUtils {
             while (rs.next()) {
                 TableInfoEntity tableInfo = new TableInfoEntity();
                 tableInfo.setTableName(rs.getString(dbQuery.tableName()));
+                tableInfo.setTableOwner(rs.getString(dbQuery.tableOwner()));
                 tableInfo.setClassName(GenUtils.columnToJava(tableInfo.getTableName()));
                 tableInfo.setTableComment(rs.getString(dbQuery.tableComment()));
                 tableInfo.setDatasourceId(info.getId());

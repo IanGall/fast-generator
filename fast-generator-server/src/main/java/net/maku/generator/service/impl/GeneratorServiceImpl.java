@@ -16,6 +16,7 @@ import net.maku.generator.utils.DbUtils;
 import net.maku.generator.utils.GenUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,13 +68,14 @@ public class GeneratorServiceImpl implements GeneratorService {
         //初始化配置信息
         DataSourceInfo info = getDataSourceInfo(tableInfo.getDatasourceId());
 
-        TableInfoEntity table = tableInfoService.getByTableName(tableInfo.getTableName());
+        TableInfoEntity table = tableInfoService.getByTableNameAndTableOwner(tableInfo.getTableName(),tableInfo.getTableOwner());
         //表存在
         if (table != null) {
             throw new FastException(tableInfo.getTableName() + "数据表已存在");
         }
 
-        table = DbUtils.getTablesInfo(info, tableInfo.getTableName());
+        // table = DbUtils.getTablesInfo(info, tableInfo.getTableName());
+        table = tableInfo;
 
         //代码生成器信息
         GeneratorInfo generator = generatorConfig.getGeneratorConfig(tableInfo.getTemplatePath());
@@ -149,10 +151,19 @@ public class GeneratorServiceImpl implements GeneratorService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void generatorCode(TableInfoEntity tableInfo) throws Exception {
+        //代码生成器信息
+        GeneratorInfo generator = generatorConfig.getGeneratorConfig(tableInfo.getTemplatePath());
+
+        tableInfo.setBackendPath(generator.getProject().getBackendPath());
+        tableInfo.setFrontendPath(generator.getProject().getFrontendPath());
+
+        //保存表信息
+        tableInfoService.updateById(tableInfo);
+
         //删除旧表信息
-        tableInfoService.deleteByTableName(tableInfo.getTableName());
+        tableInfoService.removeById(tableInfo.getId());
         //删除旧列信息
-        tableFieldService.deleteByTableName(tableInfo.getTableName());
+        tableFieldService.deleteByTableId(tableInfo.getId());
 
         //保存新表信息
         tableInfoService.save(tableInfo);
@@ -217,12 +228,21 @@ public class GeneratorServiceImpl implements GeneratorService {
             dataModel.put("baseClassEntity", baseClassEntity);
         }
 
-        //代码生成器信息
-        GeneratorInfo generator = generatorConfig.getGeneratorConfig(tableInfo.getTemplatePath());
+        List<TemplateInfo> templates = generator.getTemplates();
 
+        for (TemplateInfo template : templates) {
+            if (StringUtils.isBlank(template.getTemplateType())) {
+                continue;
+            }
+
+            String key = template.getTemplateType() + "Package";
+            if (dataModel.put(key, template.getPackageName()) != null) {
+                throw new FastException("属性冲突");
+            }
+        }
 
         //渲染模板并输出
-        for (TemplateInfo template : generator.getTemplates()) {
+        for (TemplateInfo template : templates) {
             dataModel.put("templateName", template.getTemplateName());
             if (StringUtils.isNotBlank(template.getPackageName())) {
                 dataModel.put("package", template.getPackageName());

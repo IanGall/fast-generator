@@ -9,6 +9,10 @@ public class TemplateInfo {
      */
     private String templateName;
     /**
+     * 模板类型
+     */
+    private String templateType;
+    /**
      * 模板内容
      */
     private String templateContent;

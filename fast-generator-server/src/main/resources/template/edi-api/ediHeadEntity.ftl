@@ -1,9 +1,10 @@
-package ${package}<#if moduleName??>.${moduleName}</#if>.entity<#if subModuleName??>.${subModuleName}</#if>;
+package ${package}<#if moduleName??>.${moduleName}</#if><#if subModuleName??>.${subModuleName}</#if>;
 
 import com.dcjet.edi.core.base.model.AbstractReceiveParam;
 import com.dcjet.edi.ftp.annotation.ColumnFiled;
 import com.dcjet.edi.util.TimestampFormatter;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.xdo.validation.annotation.XdoSize;
 import lombok.Getter;
 import lombok.Setter;

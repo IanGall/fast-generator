@@ -1,9 +1,10 @@
 {
   "project": {
     "packageName": "net.maku",
+    "projectName": "",
     "version": "1.0.0",
-    "backendPath": "D:\\generator\\fast-boot\\fast-server",
-    "frontendPath": "D:\\generator\\fast-admin"
+    "backendPath": "\\fast-boot\\fast-server",
+    "frontendPath": "\\fast-admin"
   },
   "developer": {
     "author": "阿沐",

@@ -16,8 +16,7 @@
 					style="width: 100%"
 					placeholder="请选择表名"
 				>
-					<el-option v-for="tableInfo in dataForm.tableInfoList" :key="tableInfo.tableName" :label="tableInfo.tableName" :value="tableInfo">
-					</el-option>
+					<el-option v-for="tableInfo in dataForm.tableInfoList" :key="tableInfo.tableName" :label="tableInfo.label" :value="tableInfo"> </el-option>
 				</el-select>
 			</el-form-item>
 		</el-form>
@@ -46,6 +45,7 @@ const dataForm = reactive({
 	tableInfoList: [] as any,
 	tableInfo: {
 		tableName: '',
+		tableOwner: '',
 		templatePath: 'fast-boot'
 	},
 	showTableSelect: false
