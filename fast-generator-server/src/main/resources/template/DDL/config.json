@@ -1,0 +1,19 @@
+{
+  "project": {
+    "packageName": "com.dcjet",
+    "projectName": "edi",
+    "version": "1.0.0",
+    "backendPath": "\\backend",
+    "frontendPath": "\\frontend"
+  },
+  "developer": {
+    "author": "阿沐",
+    "email": "babamu@126.com"
+  },
+  "templates": [
+    {
+      "templateName": "DDL.sql.ftl",
+      "generatorPath": "${backendPath}/${tableName}.sql"
+    }
+  ]
+}

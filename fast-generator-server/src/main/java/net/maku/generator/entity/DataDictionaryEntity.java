@@ -6,12 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.*;
-import net.maku.generator.dto.ClearanceInfoTable;
-import net.maku.generator.enumration.DataDicType;
 import net.maku.generator.utils.JSONUtils;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 数据字典表

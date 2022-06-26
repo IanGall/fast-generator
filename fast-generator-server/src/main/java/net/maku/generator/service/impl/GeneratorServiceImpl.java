@@ -8,15 +8,15 @@ import net.maku.generator.common.utils.DateUtils;
 import net.maku.generator.config.DataSourceInfo;
 import net.maku.generator.config.template.GeneratorConfig;
 import net.maku.generator.config.template.GeneratorInfo;
+import net.maku.generator.config.template.ProjectInfo;
 import net.maku.generator.config.template.TemplateInfo;
-import net.maku.generator.dto.ClearanceInfoTable;
+import net.maku.generator.dto.DataTable;
 import net.maku.generator.entity.*;
 import net.maku.generator.service.*;
 import net.maku.generator.utils.DbUtils;
 import net.maku.generator.utils.GenUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +24,8 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -91,7 +93,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         tableInfoService.save(table);
 
         //获取原生列数据
-        List<TableFieldEntity> tableFieldList = DbUtils.getTableColumns(info, table.getId(), tableInfo.getTableName(),tableInfo.getTableOwner());
+        List<TableFieldEntity> tableFieldList = DbUtils.getTableColumns(info, table.getId(), tableInfo.getTableName(), tableInfo.getTableOwner());
         //初始化列数据
         initFieldList(tableFieldList);
         //批量保存列数据
@@ -257,12 +259,76 @@ public class GeneratorServiceImpl implements GeneratorService {
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void generatorDDL(Long dataDicId, String owner) throws Exception {
+        DataDictionaryEntity dataDic = dataDictionaryService.getById(dataDicId);
+        //代码生成器信息
+        GeneratorInfo generator = generatorConfig.getGeneratorConfig("DDL");
+
+        //数据模型
+        Map<String, Object> dataModel = new HashMap<>();
+        //项目信息
+        ProjectInfo project = generator.getProject();
+        TemplateInfo template = generator.getTemplates().get(0);
+        dataModel.put("package", project.getPackageName());
+        dataModel.put("packagePath", project.getPackageName().replace(".", File.separator));
+        dataModel.put("backendPath", project.getBackendPath());
+        dataModel.put("version", project.getVersion());
+        dataModel.put("templateName", template.getTemplateName());
+        dataModel.put("owner", owner);
+
+        dataModel.put("tableName", dataDic.getTableName());
+
+        List<DataTable> dataTables = dataDic.getContentObj(DataDictionary.CLEARANCE_INFO.getTypeReference());
+        for (DataTable dataTable : dataTables) {
+            if (dataTable.getNullable().contains("非")) {
+                dataTable.setRequired(true);
+            }
+            String length = dataTable.getLength();
+
+            Pattern pattern = Pattern.compile("\\d+");
+            Matcher matcher = pattern.matcher(length);
+            LinkedList<String> nums = new LinkedList<>();
+            while (matcher.find()) {
+                // int i1 = matcher.groupCount();
+                // for(int i = 0; i<= i1; i++){
+                //     System.out.println(i+":"+matcher.group(i));
+                // }
+                nums.add(matcher.group());
+            }
+            System.out.println(nums);
+            if (dataTable.getType().contains("字符")) {
+                dataTable.setCharacterMaximumLength(nums.get(0));
+                dataTable.setRelType("varchar(" + dataTable.getCharacterMaximumLength() + ")");
+            } else if (dataTable.getType().contains("数值")) {
+                dataTable.setNumericPrecision(nums.get(0));
+                if (nums.size() > 1) {
+                    dataTable.setNumericScale(nums.get(1));
+                    dataTable.setRelType("numeric(" + dataTable.getNumericPrecision() + "," + dataTable.getNumericScale() + ")");
+                } else {
+                    dataTable.setRelType("numeric(" + dataTable.getNumericPrecision() + ")");
+                }
+            } else {
+                dataTable.setRelType("timestamp(6)");
+            }
+        }
+
+        dataModel.put("dataTableList", dataTables);
+
+        String content = GenUtils.getTemplateContent(template.getTemplateContent(), dataModel);
+        String path = GenUtils.getTemplateContent(template.getGeneratorPath(), dataModel);
+        //FileUtil.writeUtf8String(content, path);
+        FileUtils.writeStringToFile(new File(path), content, "utf-8");
+        System.out.println(path);
+    }
+
     private void handleFields(TableInfoEntity tableInfo, List<TableFieldEntity> fields) {
         DataDictionaryEntity dataDic = dataDictionaryService.getById(tableInfo.getDataDicId());
         if (dataDic == null) {
             return;
         }
-        List<ClearanceInfoTable> contentObjs = dataDic.getContentObj(DataDictionary.CLEARANCE_INFO.getTypeReference());
+        List<DataTable> contentObjs = dataDic.getContentObj(DataDictionary.CLEARANCE_INFO.getTypeReference());
         // LinkedHashMap<String, ClearanceInfoTable> columnNameToTableObj = contentObj.stream()
         //         .collect(Collectors.toMap(ClearanceInfoTable::getColumnName, clearanceInfoTable -> clearanceInfoTable
         //                 , (o1, o2) -> o1, LinkedHashMap::new));
@@ -273,7 +339,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 .collect(Collectors.toMap(TableFieldEntity::getColumnName, tableFieldEntity -> tableFieldEntity));
 
         for (int i = 0; i < contentObjs.size(); i++) {
-            ClearanceInfoTable table = contentObjs.get(i);
+            DataTable table = contentObjs.get(i);
             TableFieldEntity field = columnNameToField.get(table.getColumnName());
             if (field == null) {
                 continue;
